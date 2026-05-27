@@ -15,7 +15,6 @@ import {
   CircleDot,
   ClipboardCheck,
   Database,
-  FileSearch,
   Gavel,
   GitBranch,
   Landmark,
@@ -56,13 +55,6 @@ const GLOBAL_STYLES = `
   .governance-breathe { animation: governance-breathe 5.4s ease-in-out infinite; }
   .cursor-ring { box-shadow: 0 0 0 1px rgba(184,145,66,.18), 0 10px 30px rgba(11,107,107,.10); }
 `;
-
-const QUERIES = [
-  "Analyse ASMT-10 scrutiny notice and identify procedural defects.",
-  "Map Section 16 ITC eligibility against GSTR-2B and invoice evidence.",
-  "Rank CBIC Circulars, AAAR rulings, and High Court precedent for a POS dispute.",
-  "Generate a DRC-01 reply skeleton with citation-linked issue rebuttals.",
-];
 
 const HERO_CITATIONS = [
   ["Section 16(2), CGST Act", "6%", "24%"],
@@ -381,49 +373,15 @@ function Navbar() {
   );
 }
 
-function TypeCycle() {
-  const [index, setIndex] = useState(0);
-  const [shown, setShown] = useState("");
-
-  useEffect(() => {
-    setShown("");
-    let pointer = 0;
-    const timer = window.setInterval(() => {
-      pointer += 1;
-      setShown(QUERIES[index].slice(0, pointer));
-      if (pointer >= QUERIES[index].length) {
-        window.clearInterval(timer);
-        window.setTimeout(() => setIndex((value) => (value + 1) % QUERIES.length), 1500);
-      }
-    }, 24);
-    return () => window.clearInterval(timer);
-  }, [index]);
-
-  return (
-    <>
-      {shown}
-      <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }} className="ml-1 inline-block h-4 w-px translate-y-0.5 bg-[#0B6B6B]" />
-    </>
-  );
-}
-
 function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollY, mouseX, mouseY } = useSmooth();
-  const [activeTag, setActiveTag] = useState("CGST");
+  const { scrollY } = useSmooth();
   const [activeCitation, setActiveCitation] = useState("Section 16(2), CGST Act");
-  const { top, height, viewportH } = useMeasureSection(ref);
+  const { top, height } = useMeasureSection(ref);
   const start = Math.max(0, top);
   const end = top + height;
   const compress = useTransform(scrollY, [start, start + 1300], [0, 1]);
   const titleY = useTransform(scrollY, [start, end], [0, -140]);
-  const heroScale = useTransform(compress, [0, 1], [1, 0.84]);
-  const heroRadius = useTransform(compress, [0, 1], [28, 16]);
-  const coreWidth = useTransform(compress, [0, 1], [620, 900]);
-  const coreY = useTransform(scrollY, [start, end], [0, -viewportH * 0.38]);
-  const coreX = useTransform(mouseX, (value) => value * 10);
-  const coreTiltX = useSpring(useTransform(mouseY, [-1, 1], [1.8, -1.8]), { stiffness: 80, damping: 24 });
-  const coreTiltY = useSpring(useTransform(mouseX, [-1, 1], [-2.2, 2.2]), { stiffness: 80, damping: 24 });
   const gridOpacity = useTransform(compress, [0, 1], [0.04, 0.11]);
 
   return (
@@ -454,10 +412,6 @@ function Hero() {
         <MidgroundConnectors start={start} end={end} />
 
         <motion.div className="absolute left-1/2 top-[12vh] z-10 max-w-[820px] -translate-x-1/2 px-6 text-center gpu" style={{ y: titleY }}>
-          <div className="mb-5 inline-flex items-center gap-2 rounded-lg border border-[#0B6B6B]/14 bg-white/70 px-4 py-2 backdrop-blur-sm">
-            <Sparkles size={13} className="text-[#B89142]" />
-            <span className="font-['JetBrains_Mono'] text-[11px] uppercase tracking-[.14em] text-[#0B6B6B]">Scroll-driven GST Intelligence System</span>
-          </div>
           <h1 className="text-balance font-['Playfair_Display'] text-[38px] font-semibold leading-[1.03] text-[#1A1F2E] md:text-[46px] lg:text-[64px] xl:text-[70px]">
             One governed GST core evolving into specialist AI systems.
           </h1>
@@ -467,118 +421,11 @@ function Hero() {
           </p>
         </motion.div>
 
-        <motion.div
-          className="absolute left-1/2 top-[62vh] z-20 max-w-[92vw] -translate-x-1/2 gpu [perspective:1400px]"
-          style={{ y: coreY, x: coreX, scale: heroScale, width: coreWidth, rotateX: coreTiltX, rotateY: coreTiltY }}
-        >
-          <motion.div
-            className="sweep-mask overflow-hidden border border-[#0B6B6B]/14 bg-white/92 p-6 shadow-[0_28px_90px_rgba(11,107,107,.13),0_4px_18px_rgba(26,31,46,.06)] backdrop-blur-sm"
-            style={{ borderRadius: heroRadius }}
-          >
-            <div className="flex items-center justify-between border-b border-[#0B6B6B]/10 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0B6B6B] shadow-[0_12px_28px_rgba(11,107,107,.28)]">
-                  <Network size={23} className="text-white" strokeWidth={1.5} />
-                </div>
-                <div className="text-left">
-                  <div className="font-['Playfair_Display'] text-[22px] font-semibold text-[#1A1F2E]">GST Intelligence Core</div>
-                  <div className="font-['JetBrains_Mono'] text-[9px] uppercase tracking-[.16em] text-[#B89142]">Retrieval - ranking - reasoning - review</div>
-                </div>
-              </div>
-              <div className="hidden items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 md:flex">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                <span className="font-['JetBrains_Mono'] text-[9px] uppercase tracking-[.12em] text-emerald-700">Audit Active</span>
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-4 md:grid-cols-[1fr_.72fr]">
-              <div className="rounded-xl border border-[#0B6B6B]/10 bg-[#F8FAFA] p-4">
-                <div className="mb-3 flex items-center gap-2">
-                  <FileSearch size={15} className="text-[#0B6B6B]" />
-                  <span className="font-['JetBrains_Mono'] text-[10px] uppercase tracking-[.14em] text-[#0B6B6B]/60">Matter Intake</span>
-                </div>
-                <div className="min-h-[64px] font-['DM_Sans'] text-[15px] font-light leading-[1.65] text-[#1A1F2E]">
-                  <TypeCycle />
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {["CGST", "CBIC", "AAAR", "GSTR-2B", "SCN", "Evidence"].map((tag, index) => (
-                    <CoreTag key={tag} tag={tag} index={index} compress={compress} active={activeTag === tag} onClick={() => setActiveTag(tag)} />
-                  ))}
-                </div>
-                <motion.div
-                  key={activeTag}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-3 rounded-lg border border-[#B89142]/20 bg-[#B89142]/8 px-3 py-2 font-['DM_Sans'] text-[12px] text-[#6B5A2E]"
-                >
-                  {activeTag} layer selected for repository weighting.
-                </motion.div>
-              </div>
-              <div className="space-y-2.5">
-                {["Source boundary locked", "Authority ranking active", "Citation trail expanding", "Reviewer gate required"].map((item, index) => (
-                  <CoreStatus key={item} item={item} index={index} compress={compress} />
-                ))}
-              </div>
-            </div>
-            <motion.div
-              key={activeCitation}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-4 rounded-xl border border-[#0B6B6B]/10 bg-[#F8FAFA] px-4 py-3"
-            >
-              <div className="font-['JetBrains_Mono'] text-[9px] uppercase tracking-[.14em] text-[#B89142]">Active citation node</div>
-              <div className="mt-1 font-['DM_Sans'] text-[13px] text-[#1A1F2E]">{activeCitation}</div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-
         <DepthLayer scrollRange={[start, end + 300]} mouseStrength={34}>
           <ForegroundTrails start={start} end={end} />
         </DepthLayer>
       </div>
     </section>
-  );
-}
-
-function CoreTag({
-  tag,
-  index,
-  compress,
-  active,
-  onClick,
-}: {
-  tag: string;
-  index: number;
-  compress: MotionValue<number>;
-  active: boolean;
-  onClick: () => void;
-}) {
-  const y = useTransform(compress, [0, 1], [0, index % 2 ? -16 : 16]);
-  const x = useTransform(compress, [0, 1], [0, (index - 2.5) * 18]);
-  return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.94 }}
-      whileHover={{ y: -2 }}
-      onClick={onClick}
-      className={`rounded-md border px-2.5 py-1 font-['JetBrains_Mono'] text-[10px] transition-colors ${
-        active ? "border-[#B89142]/45 bg-[#B89142]/12 text-[#8A6724]" : "border-[#0B6B6B]/12 bg-white text-[#0B6B6B]"
-      }`}
-      style={{ x, y }}
-    >
-      {tag}
-    </motion.button>
-  );
-}
-
-function CoreStatus({ item, index, compress }: { item: string; index: number; compress: MotionValue<number> }) {
-  const y = useTransform(compress, [0, 1], [0, (index - 1.5) * 22]);
-  const opacity = useTransform(compress, [0, 0.25, 1], [1, 1, 0.78]);
-  return (
-    <motion.div className="flex items-center gap-2 rounded-lg border border-[#0B6B6B]/10 bg-white/80 p-3" style={{ y, opacity }}>
-      <CheckCircle2 size={14} className="text-[#0B6B6B]" />
-      <span className="font-['DM_Sans'] text-[12px] text-[#1A1F2E]">{item}</span>
-    </motion.div>
   );
 }
 
