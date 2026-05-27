@@ -71,6 +71,15 @@ const GLOBAL_STYLES = `
     vertical-align: -0.14em;
     animation: caret-blink .8s steps(1, end) infinite;
   }
+  .row-fade-in {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .48s ease, transform .48s ease;
+  }
+  .row-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
   .citation-chip {
     background: rgba(255,255,255,.82);
     color: rgba(11,107,107,.64);
@@ -258,6 +267,42 @@ function useMeasureSection(ref: RefObject<HTMLElement | null>) {
   }, [ref]);
 
   return { ...bounds, viewportH };
+}
+
+function AnimatedRow({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLTableRowElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setVisible(entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.15,
+        rootMargin: "0px 0px -10% 0px",
+      }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <tr ref={ref} className={`${className ?? ""} row-fade-in${visible ? " visible" : ""}`}>
+      {children}
+    </tr>
+  );
 }
 
 function SmoothScrollShell({ children }: { children: ReactNode }) {
@@ -812,44 +857,85 @@ function GovernanceLayer() {
     <section id="governance" ref={ref} className="relative overflow-hidden pb-16 pt-10" style={{ background: "#F4F2ED" }}>
       <motion.div className="absolute inset-0" style={{ background: bg }} />
       <div className="relative z-10 mx-auto max-w-[1380px] px-6 lg:px-10">
-        <div className="mb-10 max-w-3xl">
-          <SectionLabel tone="gold">Governance Stabilization</SectionLabel>
+        <div className="mb-8 max-w-3xl">
+          <SectionLabel tone="gold">Value Matrix</SectionLabel>
           <h2 className="mt-6 font-['Playfair_Display'] text-[42px] font-semibold leading-[1.1] text-[#1A1F2E] md:text-[56px]">
-            Motion becomes slower, denser, and more controlled.
+            Friction vs Guided Flow
           </h2>
-          <p className="mt-5 font-['DM_Sans'] text-[16px] font-light leading-[1.75] text-[#556070]">
-            The environment visually stabilizes as the story enters audit, authority hierarchy,
-            source boundaries, and reviewer sign-off.
-          </p>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {AUTHORITY_STACK.map(([label, value], index) => (
-            <AuthorityTile key={label} label={label} value={value} index={index} structure={structure} />
-          ))}
+        <div className="mt-8 space-y-[18px]">
+          {/* Header Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse rounded-[4px] overflow-hidden">
+              <thead>
+                <AnimatedRow className="bg-[#0B6B6B] text-white">
+                  <th className="border border-[#0B6B6B]/30 px-5 py-4 text-left font-['Playfair_Display'] text-[15px] font-semibold w-[20%]">Area of Operation</th>
+                  <th className="border border-[#0B6B6B]/30 px-5 py-4 text-left font-['Playfair_Display'] text-[15px] font-semibold w-[35%]">The Old Operational Friction</th>
+                  <th className="border border-[#0B6B6B]/30 px-5 py-4 text-left font-['Playfair_Display'] text-[15px] font-semibold w-[35%]">The Controlled VTAG Workspace</th>
+                  <th className="border border-[#0B6B6B]/30 px-5 py-4 text-left font-['Playfair_Display'] text-[15px] font-semibold w-[10%]">Quality Shift</th>
+                </AnimatedRow>
+              </thead>
+            </table>
+          </div>
+
+          {/* Table 1 */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse rounded-[4px] overflow-hidden">
+              <tbody>
+                <AnimatedRow className="bg-white/60 border border-[#0B6B6B]/15">
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-[#1A1F2E] text-left w-[20%]">Inbound Notice Processing</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Wasting endless hours trying to manually parse text lines in search of explicit allegations.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Documents are immediately converted into a structured intake file with guided checklists.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-left w-[10%]"><span className="block w-full bg-[#084F47] text-white px-3 py-2 rounded text-center">90% Fast-Track</span></td>
+                </AnimatedRow>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table 2 */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse rounded-[4px] overflow-hidden">
+              <tbody>
+                <AnimatedRow className="bg-white/60 border border-[#0B6B6B]/15">
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-[#1A1F2E] text-left w-[20%]">Risk Assessment</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Frequent missed deadline blindspots, un-isolated section codes, and split demand assessments.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Platform prompts immediate isolation of tax periods, specific allegations, and exact demand splits.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-left w-[10%]"><span className="block w-full bg-[#084F47] text-white px-3 py-2 rounded text-center">Mitigated</span></td>
+                </AnimatedRow>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table 3 */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse rounded-[4px] overflow-hidden">
+              <tbody>
+                <AnimatedRow className="bg-white/60 border border-[#0B6B6B]/15">
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-[#1A1F2E] text-left w-[20%]">Research Integrity</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Unverified, hallucinated logic pulled from generic AI models without statutory citation.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Rigid generation limits mapped strictly to current validated acts with visible supporting code citations.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-left w-[10%]"><span className="block w-full bg-[#084F47] text-white px-3 py-2 rounded text-center">Zero Error</span></td>
+                </AnimatedRow>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table 4 */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse rounded-[4px] overflow-hidden">
+              <tbody>
+                <AnimatedRow className="bg-white/60 border border-[#0B6B6B]/15">
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-[#1A1F2E] text-left w-[20%]">Team Review Speed</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Fragmented folders and disjointed email chains delay final legal review.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] text-[#556070] text-left w-[35%]">Unifies incoming files, references, and drafts within one centralized reviewer dashboard.</td>
+                  <td className="px-5 py-4 font-['DM_Sans'] text-[13px] font-medium text-left w-[10%]"><span className="block w-full bg-[#084F47] text-white px-3 py-2 rounded text-center">10x Collab</span></td>
+                </AnimatedRow>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
-          {[
-            [ShieldCheck, "Controlled Source Corpus", "No generic internet answers. Every assertion resolves to a curated GST authority or approved institutional position."],
-            [ClipboardCheck, "Human Review Gate", "Outputs remain draft intelligence until a qualified reviewer approves, edits, or rejects the analysis."],
-            [Landmark, "Institutional Audit Trail", "Source versions, prompts, reasoning steps, and reviewer actions remain visible across the matter lifecycle."],
-          ].map(([Icon, title, body], index) => {
-            const LucideIcon = Icon as typeof ShieldCheck;
-            return (
-              <GovernanceMotionCard
-                key={title as string}
-                index={index}
-                structure={structure}
-                accent={index === 1 ? "#B89142" : "#0B6B6B"}
-              >
-                <LucideIcon size={24} className="mb-5 text-[#0B6B6B]" strokeWidth={1.5} />
-                <h3 className="font-['Playfair_Display'] text-[24px] font-semibold text-[#1A1F2E]">{title as string}</h3>
-                <p className="mt-3 font-['DM_Sans'] text-[14px] font-light leading-[1.7] text-[#556070]">{body as string}</p>
-              </GovernanceMotionCard>
-            );
-          })}
-        </div>
       </div>
     </section>
   );
