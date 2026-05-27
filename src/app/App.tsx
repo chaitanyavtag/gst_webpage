@@ -12,18 +12,17 @@ import {
   BadgeCheck,
   Building2,
   CheckCircle2,
-  CircleDot,
   ClipboardCheck,
-  ArrowRight,
+  CircleDot,
   Database,
   Gavel,
   GitBranch,
   Landmark,
   Layers3,
   Network,
+  ArrowRight,
   Scale,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 
 const GLOBAL_STYLES = `
@@ -116,15 +115,6 @@ const GLOBAL_STYLES = `
   .cursor-ring { box-shadow: 0 0 0 1px rgba(184,145,66,.18), 0 10px 30px rgba(11,107,107,.10); }
 `;
 
-const HERO_CITATIONS = [
-  ["Section 16(2), CGST Act", "6%", "24%"],
-  ["Circular 183/15/2022-GST", "72%", "18%"],
-  ["Rule 36(4)", "82%", "54%"],
-  ["FORM GST DRC-01", "7%", "68%"],
-  ["AAAR Classification Ruling", "68%", "78%"],
-  ["Section 73 Limitation", "42%", "14%"],
-];
-
 const SYSTEMS = [
   {
     key: "litigation",
@@ -168,6 +158,47 @@ const AUTHORITY_STACK = [
   ["Institution", "Internal tax positions"],
   ["Evidence", "Invoices, ledgers, ERP data"],
 ];
+
+const NAV_OFFSET_MOBILE = 76;
+
+type HeroNodeData = {
+  symbol: string;
+  angle: number;
+  baseRadius: number;
+  expansion: number;
+  exitRadius: number;
+  size: number;
+  depth: number;
+  spin: number;
+  color: string;
+  glow: string;
+  blur: number;
+  opacity: number;
+  xScale: number;
+  yScale: number;
+  tilt: number;
+};
+
+const HERO_NODES: HeroNodeData[] = [
+  { symbol: "\u25C8", angle: -2.85, baseRadius: 150, expansion: 176, exitRadius: 740, size: 30, depth: 0.72, spin: 1.85, color: "#0B6B6B", glow: "rgba(11,107,107,.22)", blur: 0.1, opacity: 0.84, xScale: 1.1, yScale: 0.78, tilt: -12 },
+  { symbol: "\u25BD", angle: -2.18, baseRadius: 132, expansion: 188, exitRadius: 760, size: 22, depth: 0.58, spin: -1.7, color: "#216E8A", glow: "rgba(33,110,138,.18)", blur: 0.35, opacity: 0.72, xScale: 0.92, yScale: 0.84, tilt: 18 },
+  { symbol: "\u2B21", angle: -1.7, baseRadius: 196, expansion: 228, exitRadius: 860, size: 36, depth: 0.92, spin: 1.48, color: "#1A7A68", glow: "rgba(26,122,104,.24)", blur: 0, opacity: 0.9, xScale: 1.06, yScale: 0.74, tilt: -8 },
+  { symbol: "\u2726", angle: -1.22, baseRadius: 126, expansion: 166, exitRadius: 700, size: 26, depth: 0.62, spin: 2.16, color: "#B89142", glow: "rgba(184,145,66,.2)", blur: 0.3, opacity: 0.78, xScale: 0.9, yScale: 0.88, tilt: 10 },
+  { symbol: "\u25CE", angle: -0.76, baseRadius: 208, expansion: 238, exitRadius: 920, size: 32, depth: 0.84, spin: -1.62, color: "#0B6B6B", glow: "rgba(11,107,107,.22)", blur: 0.2, opacity: 0.86, xScale: 1.18, yScale: 0.72, tilt: 6 },
+  { symbol: "\u2295", angle: -0.28, baseRadius: 164, expansion: 186, exitRadius: 830, size: 24, depth: 0.54, spin: 1.9, color: "#216E8A", glow: "rgba(33,110,138,.16)", blur: 0.55, opacity: 0.68, xScale: 0.98, yScale: 0.92, tilt: -14 },
+  { symbol: "\u00D8", angle: 0.14, baseRadius: 142, expansion: 192, exitRadius: 780, size: 28, depth: 0.66, spin: -1.84, color: "#1A7A68", glow: "rgba(26,122,104,.18)", blur: 0.22, opacity: 0.74, xScale: 1.02, yScale: 0.86, tilt: 14 },
+  { symbol: "\u221E", angle: 0.64, baseRadius: 188, expansion: 230, exitRadius: 900, size: 34, depth: 0.96, spin: 1.42, color: "#B89142", glow: "rgba(184,145,66,.22)", blur: 0.05, opacity: 0.88, xScale: 1.14, yScale: 0.7, tilt: -4 },
+  { symbol: "\u2737", angle: 1.12, baseRadius: 128, expansion: 174, exitRadius: 720, size: 24, depth: 0.6, spin: -2.05, color: "#0B6B6B", glow: "rgba(11,107,107,.18)", blur: 0.42, opacity: 0.7, xScale: 0.9, yScale: 0.9, tilt: 12 },
+  { symbol: "\u25C7", angle: 1.58, baseRadius: 212, expansion: 244, exitRadius: 940, size: 30, depth: 0.88, spin: 1.56, color: "#216E8A", glow: "rgba(33,110,138,.22)", blur: 0.12, opacity: 0.86, xScale: 1.08, yScale: 0.76, tilt: -10 },
+  { symbol: "\u25C9", angle: 2.08, baseRadius: 154, expansion: 196, exitRadius: 810, size: 34, depth: 0.8, spin: -1.78, color: "#1A7A68", glow: "rgba(26,122,104,.22)", blur: 0.18, opacity: 0.82, xScale: 0.96, yScale: 0.84, tilt: 8 },
+  { symbol: "\u2B22", angle: 2.56, baseRadius: 198, expansion: 236, exitRadius: 900, size: 26, depth: 0.7, spin: 1.68, color: "#B89142", glow: "rgba(184,145,66,.2)", blur: 0.28, opacity: 0.76, xScale: 1.16, yScale: 0.72, tilt: -16 },
+];
+
+const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
+const lerp = (start: number, end: number, amount: number) => start + (end - start) * amount;
+const segmentProgress = (value: number, start: number, end: number) => clamp01((value - start) / Math.max(0.0001, end - start));
+const easeOutCubic = (value: number) => 1 - (1 - value) ** 3;
+const easeInCubic = (value: number) => value ** 3;
 
 type SmoothContextValue = {
   scrollY: MotionValue<number>;
@@ -437,138 +468,170 @@ function Navbar() {
 }
 
 function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const [activeCitation, setActiveCitation] = useState("Section 16(2), CGST Act");
-  const { top, height } = useMeasureSection(ref);
-  const start = Math.max(0, top);
-  const end = top + height;
+  const { scrollY, mouseX, mouseY, viewportH } = useSmooth();
+  const stickyViewport = Math.max(520, viewportH - NAV_OFFSET_MOBILE);
+  const sceneLength = Math.max(stickyViewport * 2.45, 1);
+  const progress = useSpring(useTransform(scrollY, [0, sceneLength], [0, 1]), {
+    stiffness: 180,
+    damping: 30,
+    mass: 0.25,
+  });
+  const auraScale = useTransform(progress, [0, 0.56, 1], [0.84, 1.12, 1.34]);
+  const auraOpacity = useTransform(progress, [0, 0.56, 1], [0.72, 0.92, 0.18]);
+  const textScale = useSpring(useTransform(progress, [0, 0.46, 0.72], [1, 1, 0.62]), {
+    stiffness: 240,
+    damping: 34,
+  });
+  const textOpacity = useSpring(useTransform(progress, [0, 0.5, 0.74], [1, 1, 0]), {
+    stiffness: 220,
+    damping: 32,
+  });
+  const textY = useSpring(useTransform(progress, [0, 0.74], [0, -96]), {
+    stiffness: 220,
+    damping: 28,
+  });
+  const backgroundX = useSpring(useTransform(mouseX, (value) => value * 26), {
+    stiffness: 80,
+    damping: 18,
+  });
+  const backgroundY = useSpring(useTransform(mouseY, (value) => value * 18), {
+    stiffness: 80,
+    damping: 18,
+  });
+  const overlayVeil = useTransform(progress, [0.54, 0.8], [0, 0.84]);
 
   return (
-    <section ref={ref} className="relative h-screen overflow-hidden bg-[#F6F4EF]">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#F6F4EF_0%,#EDF7F7_52%,#F5F1E9_100%)]" />
+    <section id="core" className="relative h-[360vh] bg-[#F6F4EF]">
+      <div className="sticky top-[76px] h-[calc(100svh-76px)] overflow-hidden md:top-[88px] md:h-[calc(100svh-88px)]">
+        <motion.div
+          className="absolute inset-[-8%]"
+          style={{
+            x: backgroundX,
+            y: backgroundY,
+            background:
+              "radial-gradient(circle at 50% 46%, rgba(255,255,255,.88), rgba(255,255,255,0) 24%), radial-gradient(circle at 20% 20%, rgba(184,145,66,.12), transparent 26%), radial-gradient(circle at 80% 24%, rgba(33,110,138,.1), transparent 28%), linear-gradient(140deg, #F6F4EF 0%, #EEF7F7 54%, #F4F2ED 100%)",
+          }}
+        />
+        <motion.div
+          className="absolute left-1/2 top-1/2 h-[62vmax] w-[62vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            scale: auraScale,
+            opacity: auraOpacity,
+            background:
+              "radial-gradient(circle, rgba(11,107,107,.11) 0%, rgba(11,107,107,.06) 28%, rgba(184,145,66,.09) 46%, rgba(255,255,255,0) 74%)",
+            filter: "blur(10px)",
+          }}
+        />
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            opacity: overlayVeil,
+            background:
+              "linear-gradient(180deg, rgba(246,244,239,0) 0%, rgba(246,244,239,.08) 22%, rgba(246,244,239,.52) 58%, rgba(246,244,239,.94) 100%)",
+          }}
+        />
 
-        <DepthLayer scrollRange={[start, end]} mouseStrength={5}>
-          <motion.div
-            className="absolute inset-[-10%] gpu"
-            style={{
-              opacity: 0.085,
-              backgroundImage:
-                "linear-gradient(rgba(11,107,107,1) 1px, transparent 1px), linear-gradient(90deg, rgba(11,107,107,1) 1px, transparent 1px), radial-gradient(circle at 22% 24%, rgba(184,145,66,.7), transparent 26%)",
-              backgroundSize: "62px 62px, 62px 62px, 100% 100%",
-            }}
-          />
-        </DepthLayer>
+        {HERO_NODES.map((node, index) => (
+          <HeroSymbolNode key={`${node.symbol}-${index}`} node={node} progress={progress} />
+        ))}
 
-        <DepthLayer scrollRange={[start, end + 600]} mouseStrength={12}>
-          <TopographicInfrastructure />
-        </DepthLayer>
-
-        <DepthLayer scrollRange={[start, end + 500]} mouseStrength={20}>
-          <RepositoryOrbit activeCitation={activeCitation} onSelect={setActiveCitation} />
-        </DepthLayer>
-
-        <MidgroundConnectors start={start} end={end} />
-
-        <motion.div className="absolute left-1/2 top-[8vh] z-10 max-w-[820px] -translate-x-1/2 px-6 text-center gpu">
-          <h1 className="text-balance font-['Playfair_Display'] text-[38px] font-semibold leading-[1.03] text-[#1A1F2E] md:text-[46px] lg:text-[64px] xl:text-[70px]">
+        <motion.div
+          className="absolute left-1/2 top-[48%] z-20 w-full max-w-[980px] -translate-x-1/2 -translate-y-1/2 px-6 text-center sm:px-8"
+          style={{ scale: textScale, opacity: textOpacity, y: textY }}
+        >
+          <h1 className="text-balance font-['Playfair_Display'] text-[clamp(2.75rem,6vw,5rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
             One governed GST core evolving into specialist AI systems.
           </h1>
-          <p className="mx-auto mt-5 hidden max-w-2xl font-['DM_Sans'] text-[17px] font-light leading-[1.65] text-[#556070] lg:block">
-            The homepage behaves as a living institutional reasoning architecture: sources orbit,
-            connectors redraw, modules detach, and branches emerge through scroll.
+          <p className="mx-auto mt-5 max-w-[760px] text-balance font-['DM_Sans'] text-[15px] font-light leading-[1.7] text-[#556070] sm:text-[17px] md:text-[18px]">
+            The homepage behaves as a living institutional reasoning architecture: sources orbit, connectors redraw, modules detach, and branches emerge through scroll.
           </p>
         </motion.div>
-
-        <DepthLayer scrollRange={[start, end + 300]} mouseStrength={34}>
-          <ForegroundTrails start={start} end={end} />
-        </DepthLayer>
       </div>
     </section>
   );
 }
 
-function TopographicInfrastructure() {
-  return (
-    <svg className="absolute inset-0 h-full w-full opacity-[.12]" viewBox="0 0 1400 900" fill="none">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <path
-          key={index}
-          d={`M${-120 + index * 34} ${140 + index * 48} C 220 ${40 + index * 26}, 430 ${260 + index * 8}, 710 ${160 + index * 42} S 1160 ${260 + index * 24}, 1510 ${110 + index * 40}`}
-          stroke={index % 3 === 0 ? "#B89142" : "#0B6B6B"}
-          strokeWidth="1"
-          className="flow-line-slow"
-          opacity={0.28}
-        />
-      ))}
-    </svg>
-  );
-}
-
-function RepositoryOrbit({
-  activeCitation,
-  onSelect,
+function HeroSymbolNode({
+  node,
+  progress,
 }: {
-  activeCitation: string;
-  onSelect: (value: string) => void;
+  node: HeroNodeData;
+  progress: MotionValue<number>;
 }) {
-  return (
-    <div className="absolute inset-0">
-      {HERO_CITATIONS.map(([text, left, top], index) => (
-        <motion.button
-          type="button"
-          key={text}
-          whileHover={{
-            y: -6,
-            scale: 1.08,
-            rotateX: index % 2 === 0 ? 24 : -22,
-            rotateY: index % 3 === 0 ? -28 : 26,
-            rotateZ: index % 2 === 0 ? 2.5 : -2.5,
-          }}
-          whileTap={{ scale: 0.97 }}
-          transition={{ type: "spring", stiffness: 300, damping: 16 }}
-          onClick={() => onSelect(text)}
-          className={`citation-chip absolute hidden rounded-lg border px-3 py-1.5 text-left shadow-[0_10px_30px_rgba(11,107,107,.07)] backdrop-blur-sm md:block ${
-            activeCitation === text ? "border-[#B89142]/45" : "border-[#0B6B6B]/10"
-          }`}
-          style={{ left, top, transformPerspective: 760, transformStyle: "preserve-3d" }}
-        >
-          <span className="citation-chip__dot inline-block h-1.5 w-1.5 rounded-full align-middle" />
-          <span className="citation-chip__text ml-2 inline-block font-['JetBrains_Mono'] text-[10px]">{text}</span>
-        </motion.button>
-      ))}
-    </div>
+  const { mouseX, mouseY } = useSmooth();
+  const orbitX = useTransform([progress, mouseX], ([value, drift]) => {
+    const p = value as number;
+    const mx = drift as number;
+    const settle = easeOutCubic(segmentProgress(p, 0, 0.14));
+    const expand = easeOutCubic(segmentProgress(p, 0.14, 0.52));
+    const release = easeInCubic(segmentProgress(p, 0.56, 1));
+    const radius =
+      lerp(node.baseRadius - 18, node.baseRadius, settle) +
+      node.expansion * 1.24 * expand +
+      node.exitRadius * release;
+    const angle = node.angle + p * node.spin * Math.PI;
+    return Math.cos(angle) * radius * node.xScale + mx * node.depth * 18;
+  });
+  const orbitY = useTransform([progress, mouseY], ([value, drift]) => {
+    const p = value as number;
+    const my = drift as number;
+    const settle = easeOutCubic(segmentProgress(p, 0, 0.14));
+    const expand = easeOutCubic(segmentProgress(p, 0.14, 0.52));
+    const release = easeInCubic(segmentProgress(p, 0.56, 1));
+    const radius =
+      lerp(node.baseRadius - 18, node.baseRadius, settle) +
+      node.expansion * 1.24 * expand +
+      node.exitRadius * release;
+    const angle = node.angle + p * node.spin * Math.PI;
+    return Math.sin(angle) * radius * node.yScale + my * node.depth * 12;
+  });
+  const x = useSpring(orbitX, { stiffness: 170, damping: 24, mass: 0.22 });
+  const y = useSpring(orbitY, { stiffness: 170, damping: 24, mass: 0.22 });
+  const scale = useSpring(
+    useTransform(progress, (value) => {
+      const expand = easeOutCubic(segmentProgress(value, 0.14, 0.52));
+      const release = segmentProgress(value, 0.56, 1);
+      return lerp(0.78 + node.depth * 0.1, 1.08 + node.depth * 0.22, expand) * lerp(1, 0.72, release);
+    }),
+    { stiffness: 220, damping: 28 },
   );
-}
-
-function MidgroundConnectors({ start, end }: { start: number; end: number }) {
-  const { scrollY, mouseX, mouseY } = useSmooth();
-  const active = useTransform(scrollY, [start, end], [0.2, 1]);
-  const cursorX = useTransform(mouseX, [-1, 1], [530, 870]);
-  const cursorY = useTransform(mouseY, [-1, 1], [230, 430]);
-  const d1 = useMotionTemplate`M240 570 C420 400 ${cursorX} ${cursorY} 700 460`;
-  const d2 = useMotionTemplate`M1150 220 C930 260 ${cursorX} ${cursorY} 700 460`;
-  return (
-    <motion.svg className="absolute inset-0 z-[8] h-full w-full opacity-70" viewBox="0 0 1400 900" fill="none" style={{ opacity: active }}>
-      <motion.path d={d1} stroke="#0B6B6B" strokeWidth="1.2" className="flow-line" fill="none" />
-      <motion.path d={d2} stroke="#B89142" strokeWidth="1.2" className="flow-line" fill="none" />
-    </motion.svg>
+  const opacity = useSpring(
+    useTransform(progress, (value) => {
+      const fadeOut = easeOutCubic(segmentProgress(value, 0.62, 1));
+      return node.opacity * (1 - fadeOut);
+    }),
+    { stiffness: 220, damping: 30 },
   );
-}
+  const rotate = useTransform(progress, (value) => node.tilt + value * node.spin * 210);
+  const blur = useTransform(progress, (value) => `blur(${(node.blur + segmentProgress(value, 0.62, 1) * 1.35).toFixed(2)}px)`);
+  const haloSize = node.size * (2.8 + node.depth * 0.7);
 
-function ForegroundTrails({ start, end }: { start: number; end: number }) {
-  const { scrollY } = useSmooth();
-  const opacity = useTransform(scrollY, [start + 200, end - 300], [0.35, 0.95]);
-  const x = useTransform(scrollY, [start, end], [-120, 180]);
   return (
-    <motion.div className="absolute inset-0 z-30 pointer-events-none" style={{ opacity }}>
-      {[12, 38, 64, 78].map((top, index) => (
-        <motion.div
-          key={top}
-          className="absolute h-px w-40 bg-gradient-to-r from-transparent via-[#B89142]/55 to-transparent"
-          style={{ top: `${top}%`, left: `${18 + index * 17}%`, x }}
-        />
-      ))}
+    <motion.div
+      className="pointer-events-none absolute left-1/2 top-1/2 gpu -translate-x-1/2 -translate-y-1/2"
+      style={{ x, y, opacity, scale, rotate, filter: blur, zIndex: Math.round(8 + node.depth * 8) }}
+    >
+      <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          width: `${haloSize}px`,
+          height: `${haloSize}px`,
+          background: `radial-gradient(circle, ${node.glow} 0%, rgba(255,255,255,0) 72%)`,
+          filter: "blur(14px)",
+          opacity: 0.92,
+        }}
+      />
+      <span
+        className="relative block select-none font-['JetBrains_Mono'] font-medium tracking-[-0.04em]"
+        style={{
+          color: node.color,
+          fontSize: `${node.size}px`,
+          lineHeight: 1,
+          textShadow: `0 0 18px ${node.glow}, 0 12px 34px rgba(26,31,46,.08)`,
+        }}
+      >
+        {node.symbol}
+      </span>
     </motion.div>
   );
 }
@@ -580,12 +643,20 @@ function BranchMorphStage() {
   const progress = useTransform(scrollY, [top - viewportH * 0.82, top + viewportH * 0.08], [0, 1]);
   const stageOpacity = useTransform(progress, [0, 0.18], [0.35, 1]);
   const headerY = useTransform(progress, [0, 0.5], [34, 0]);
-  const headerOpacity = useTransform(progress, [0, 0.2], [0, 1]);
+  const headerOpacity = useTransform(progress, [0, 0.22], [0, 1]);
   const stageX = useTransform(mouseX, (value) => value * 8);
+  const stageY = useSpring(useTransform(progress, [0, 0.2], [110, 0]), {
+    stiffness: 180,
+    damping: 28,
+  });
+  const stageScale = useSpring(useTransform(progress, [0, 0.2], [0.92, 1]), {
+    stiffness: 180,
+    damping: 28,
+  });
 
   return (
     <section id="branches" ref={ref} className="relative min-h-screen overflow-hidden bg-[#EEF7F7]">
-      <div className="relative min-h-screen overflow-hidden">
+      <motion.div className="relative min-h-screen overflow-hidden" style={{ y: stageY, scale: stageScale }}>
         <motion.div
           className="absolute inset-0 bg-[radial-gradient(circle_at_50%_24%,rgba(11,107,107,.12),transparent_28%),linear-gradient(180deg,#EEF7F7_0%,#F5F2EC_100%)]"
           style={{ x: stageX, opacity: stageOpacity }}
@@ -603,7 +674,7 @@ function BranchMorphStage() {
         </motion.div>
 
         <BranchCarousel progress={progress} />
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -651,7 +722,7 @@ function BranchCard({
   return (
     <motion.div className="h-[270px] w-[min(86vw,520px)] flex-none gpu" style={{ y, opacity }}>
       <LivingCard accent={system.color} className="card-sheen h-full">
-        <div className="mb-3 flex items-start justify-between">
+        <div className="mb-5 flex items-start justify-between gap-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: system.color }}>
             <Icon size={20} className="text-white" strokeWidth={1.5} />
           </div>
