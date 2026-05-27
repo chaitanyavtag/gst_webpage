@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   CircleDot,
   ClipboardCheck,
+  ArrowRight,
   Database,
   Gavel,
   GitBranch,
@@ -38,8 +39,67 @@ const GLOBAL_STYLES = `
   @keyframes data-sweep { 0% { transform: translateX(-130%); opacity: 0; } 18% { opacity: 1; } 82% { opacity: 1; } 100% { transform: translateX(130%); opacity: 0; } }
   @keyframes governance-breathe { 0%, 100% { opacity: .52; transform: scale(1); } 50% { opacity: .92; transform: scale(1.018); } }
   @keyframes route-node { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+  @keyframes branch-carousel { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+  @keyframes card-sheen { 0% { transform: translateX(120%); opacity: 0; } 22% { opacity: 1; } 78% { opacity: 1; } 100% { transform: translateX(-120%); opacity: 0; } }
+  @keyframes typewriter { 0%, 16% { clip-path: inset(0 100% 0 0); } 58%, 100% { clip-path: inset(0 0 0 0); } }
+  @keyframes caret-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: 0; } }
   .flow-line { stroke-dasharray: 9 12; }
   .flow-line-slow { stroke-dasharray: 14 18; }
+  .branch-carousel-track { animation: branch-carousel 28s linear infinite; }
+  .branch-carousel-mask:hover .branch-carousel-track { animation-play-state: paused; }
+  .card-sheen { position: relative; overflow: hidden; }
+  .card-sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, rgba(11,107,107,.10), transparent);
+    animation: card-sheen 4.4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .description-box { position: relative; overflow: hidden; }
+  .description-text {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    animation: typewriter 4.2s steps(58, end) infinite;
+  }
+  .description-text::after {
+    content: "";
+    display: inline-block;
+    height: 1em;
+    width: 1px;
+    margin-left: 3px;
+    background: currentColor;
+    vertical-align: -0.14em;
+    animation: caret-blink .8s steps(1, end) infinite;
+  }
+  .citation-chip {
+    background: rgba(255,255,255,.82);
+    color: rgba(11,107,107,.64);
+    transform-style: preserve-3d;
+    transition: color .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+  }
+  .citation-chip:hover {
+    background: linear-gradient(135deg, #8A6421 0%, #B89142 48%, #6E4A13 100%);
+    color: #fff;
+    border-color: rgba(255,255,255,.34);
+    box-shadow: 0 22px 46px rgba(95,63,13,.24), 0 10px 24px rgba(11,107,107,.10);
+  }
+  .citation-chip__dot {
+    background: #B89142;
+    transition: background-color .22s ease, transform .22s ease;
+  }
+  .citation-chip:hover .citation-chip__dot {
+    background: #fff;
+    transform: translateZ(14px) scale(1.14);
+  }
+  .citation-chip__text {
+    color: currentColor;
+    transition: color .22s ease, transform .22s ease;
+  }
+  .citation-chip:hover .citation-chip__text { transform: translateZ(18px); }
   .gpu { transform: translateZ(0); will-change: transform, opacity, filter; }
   .text-balance { text-wrap: balance; }
   .sweep-mask { position: relative; overflow: hidden; }
@@ -71,6 +131,7 @@ const SYSTEMS = [
     title: "Litigation Intelligence",
     short: "SCN defence, precedent ranking, limitation checks",
     code: "LIT-01",
+    cta: "Build defence",
     Icon: Gavel,
     color: "#0B6B6B",
     rows: ["Allegation extraction", "Procedural timeline", "Case-law similarity", "Reply framework"],
@@ -80,6 +141,7 @@ const SYSTEMS = [
     title: "Advisory Intelligence",
     short: "ITC, POS, contracts, transaction structures",
     code: "ADV-02",
+    cta: "Map advisory",
     Icon: GitBranch,
     color: "#216E8A",
     rows: ["Supply route mapping", "ITC impact model", "Contract GST alignment", "Risk memorandum"],
@@ -89,6 +151,7 @@ const SYSTEMS = [
     title: "Operational Intelligence",
     short: "HSN/SAC, rates, ERP tax controls, SOP retrieval",
     code: "OPS-03",
+    cta: "Validate controls",
     Icon: Database,
     color: "#1A7A68",
     rows: ["Classification grid", "Rate validation", "ERP mapping", "Compliance response"],
@@ -265,7 +328,7 @@ function useLocalCardMotion(ref: RefObject<HTMLDivElement | null>) {
   const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-2.8, 2.8]), { stiffness: 260, damping: 24 });
   const lightX = useTransform(px, [-0.5, 0.5], ["20%", "80%"]);
   const lightY = useTransform(py, [-0.5, 0.5], ["15%", "85%"]);
-  const background = useMotionTemplate`radial-gradient(circle at ${lightX} ${lightY}, rgba(224,184,106,.20), transparent 34%), linear-gradient(135deg, rgba(255,255,255,.94), rgba(248,250,250,.88))`;
+  const background = useMotionTemplate`radial-gradient(circle at ${lightX} ${lightY}, rgba(11,107,107,.08), transparent 36%), linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,251,251,.94))`;
 
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rect = ref.current?.getBoundingClientRect();
@@ -312,7 +375,7 @@ function LivingCard({
       style={{
         rotateX: motionState.rotateX,
         rotateY: motionState.rotateY,
-        borderColor: `${accent}22`,
+        borderColor: `${accent}18`,
         transformStyle: "preserve-3d",
       }}
     >
@@ -320,11 +383,11 @@ function LivingCard({
         className="absolute inset-0 rounded-2xl"
         style={{
           opacity: borderOpacity,
-          background: `linear-gradient(120deg, transparent, ${accent}66, #B8914266, transparent)`,
+          background: `linear-gradient(120deg, transparent, ${accent}33, rgba(11,107,107,.16), transparent)`,
         }}
       />
       <motion.div
-        className="relative h-full rounded-2xl border border-white/70 p-6 shadow-[0_28px_90px_rgba(11,107,107,.10),0_2px_18px_rgba(26,31,46,.06)]"
+        className="relative h-full rounded-2xl border border-white/80 p-5 shadow-[0_18px_54px_rgba(11,107,107,.075),0_2px_14px_rgba(26,31,46,.045)]"
         style={{ background: motionState.background, transform: "translateZ(20px)" }}
       >
         {children}
@@ -375,25 +438,21 @@ function Navbar() {
 
 function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollY } = useSmooth();
   const [activeCitation, setActiveCitation] = useState("Section 16(2), CGST Act");
   const { top, height } = useMeasureSection(ref);
   const start = Math.max(0, top);
   const end = top + height;
-  const compress = useTransform(scrollY, [start, start + 1300], [0, 1]);
-  const titleY = useTransform(scrollY, [start, end], [0, -140]);
-  const gridOpacity = useTransform(compress, [0, 1], [0.04, 0.11]);
 
   return (
-    <section ref={ref} className="relative min-h-[1240px] overflow-hidden bg-[#F6F4EF]">
-      <div className="sticky top-0 h-screen overflow-hidden">
+    <section ref={ref} className="relative h-screen overflow-hidden bg-[#F6F4EF]">
+      <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(135deg,#F6F4EF_0%,#EDF7F7_52%,#F5F1E9_100%)]" />
 
         <DepthLayer scrollRange={[start, end]} mouseStrength={5}>
           <motion.div
             className="absolute inset-[-10%] gpu"
             style={{
-              opacity: gridOpacity,
+              opacity: 0.085,
               backgroundImage:
                 "linear-gradient(rgba(11,107,107,1) 1px, transparent 1px), linear-gradient(90deg, rgba(11,107,107,1) 1px, transparent 1px), radial-gradient(circle at 22% 24%, rgba(184,145,66,.7), transparent 26%)",
               backgroundSize: "62px 62px, 62px 62px, 100% 100%",
@@ -411,7 +470,7 @@ function Hero() {
 
         <MidgroundConnectors start={start} end={end} />
 
-        <motion.div className="absolute left-1/2 top-[12vh] z-10 max-w-[820px] -translate-x-1/2 px-6 text-center gpu" style={{ y: titleY }}>
+        <motion.div className="absolute left-1/2 top-[8vh] z-10 max-w-[820px] -translate-x-1/2 px-6 text-center gpu">
           <h1 className="text-balance font-['Playfair_Display'] text-[38px] font-semibold leading-[1.03] text-[#1A1F2E] md:text-[46px] lg:text-[64px] xl:text-[70px]">
             One governed GST core evolving into specialist AI systems.
           </h1>
@@ -459,16 +518,23 @@ function RepositoryOrbit({
         <motion.button
           type="button"
           key={text}
-          whileHover={{ y: -3, scale: 1.03 }}
+          whileHover={{
+            y: -6,
+            scale: 1.08,
+            rotateX: index % 2 === 0 ? 24 : -22,
+            rotateY: index % 3 === 0 ? -28 : 26,
+            rotateZ: index % 2 === 0 ? 2.5 : -2.5,
+          }}
           whileTap={{ scale: 0.97 }}
+          transition={{ type: "spring", stiffness: 300, damping: 16 }}
           onClick={() => onSelect(text)}
-          className={`absolute hidden rounded-lg border px-3 py-1.5 text-left shadow-[0_10px_30px_rgba(11,107,107,.07)] backdrop-blur-sm md:block ${
-            activeCitation === text ? "border-[#B89142]/45 bg-[#B89142]/12" : "border-[#0B6B6B]/10 bg-white/80"
+          className={`citation-chip absolute hidden rounded-lg border px-3 py-1.5 text-left shadow-[0_10px_30px_rgba(11,107,107,.07)] backdrop-blur-sm md:block ${
+            activeCitation === text ? "border-[#B89142]/45" : "border-[#0B6B6B]/10"
           }`}
-          style={{ left, top }}
+          style={{ left, top, transformPerspective: 760, transformStyle: "preserve-3d" }}
         >
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#B89142] align-middle" />
-          <span className="ml-2 font-['JetBrains_Mono'] text-[10px] text-[#0B6B6B]/64">{text}</span>
+          <span className="citation-chip__dot inline-block h-1.5 w-1.5 rounded-full align-middle" />
+          <span className="citation-chip__text ml-2 inline-block font-['JetBrains_Mono'] text-[10px]">{text}</span>
         </motion.button>
       ))}
     </div>
@@ -509,37 +575,62 @@ function ForegroundTrails({ start, end }: { start: number; end: number }) {
 
 function BranchMorphStage() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollY, mouseX } = useSmooth();
-  const { top, height, viewportH } = useMeasureSection(ref);
-  const progress = useTransform(scrollY, [top, top + height - viewportH], [0, 1]);
-  const coreScale = useTransform(progress, [0, 0.28, 0.72, 1], [1, 0.84, 0.68, 0.52]);
-  const coreY = useTransform(progress, [0, 1], [70, -185]);
-  const connectorDraw = useTransform(progress, [0.12, 0.72], [0, 1]);
+  const { scrollY, mouseX, viewportH } = useSmooth();
+  const { top } = useMeasureSection(ref);
+  const progress = useTransform(scrollY, [top - viewportH * 0.82, top + viewportH * 0.08], [0, 1]);
+  const stageOpacity = useTransform(progress, [0, 0.18], [0.35, 1]);
+  const headerY = useTransform(progress, [0, 0.5], [34, 0]);
+  const headerOpacity = useTransform(progress, [0, 0.2], [0, 1]);
   const stageX = useTransform(mouseX, (value) => value * 8);
 
   return (
-    <section id="branches" ref={ref} className="relative h-[1320px] bg-[#EEF7F7]">
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(11,107,107,.12),transparent_28%),linear-gradient(180deg,#EEF7F7,#F4F2ED)]" style={{ x: stageX }} />
-        <motion.svg className="absolute inset-0 h-full w-full" viewBox="0 0 1400 900" fill="none">
-          <motion.path style={{ pathLength: connectorDraw }} d="M700 325 C500 390 350 460 245 650" stroke="#0B6B6B" strokeWidth="1.8" className="flow-line" />
-          <motion.path style={{ pathLength: connectorDraw }} d="M700 325 C700 455 700 535 700 670" stroke="#B89142" strokeWidth="1.8" className="flow-line" />
-          <motion.path style={{ pathLength: connectorDraw }} d="M700 325 C910 390 1050 460 1155 650" stroke="#216E8A" strokeWidth="1.8" className="flow-line" />
-        </motion.svg>
+    <section id="branches" ref={ref} className="relative min-h-screen overflow-hidden bg-[#EEF7F7]">
+      <div className="relative min-h-screen overflow-hidden">
+        <motion.div
+          className="absolute inset-0 bg-[radial-gradient(circle_at_50%_24%,rgba(11,107,107,.12),transparent_28%),linear-gradient(180deg,#EEF7F7_0%,#F5F2EC_100%)]"
+          style={{ x: stageX, opacity: stageOpacity }}
+        />
 
-        <motion.div className="absolute left-1/2 top-[28vh] z-10 w-[340px] -translate-x-1/2 rounded-2xl border border-[#0B6B6B]/14 bg-white/92 p-6 text-center shadow-[0_28px_80px_rgba(11,107,107,.12)] backdrop-blur-sm gpu" style={{ scale: coreScale, y: coreY }}>
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0B6B6B]">
-            <Network size={25} className="text-white" />
+        <motion.div
+          className="absolute left-1/2 top-[calc(6vh-36px)] z-10 w-[300px] -translate-x-1/2 rounded-2xl border border-[#0B6B6B]/12 bg-white/94 p-4 text-center shadow-[0_18px_54px_rgba(11,107,107,.095)] backdrop-blur-sm gpu"
+          style={{ y: headerY, opacity: headerOpacity }}
+        >
+          <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#0B6B6B]">
+            <Network size={21} className="text-white" />
           </div>
-          <div className="font-['JetBrains_Mono'] text-[10px] uppercase tracking-[.16em] text-[#B89142]">Core redistribution</div>
-          <div className="mt-2 font-['Playfair_Display'] text-[25px] font-semibold text-[#1A1F2E]">Modules detach into branches</div>
+          <div className="font-['JetBrains_Mono'] text-[10px] lowercase tracking-[.16em] text-[#B89142]">tagsott.ai</div>
+          <div className="mt-1.5 font-['Playfair_Display'] text-[21px] font-semibold text-[#1A1F2E]">Modules detach into branches</div>
         </motion.div>
 
-        {SYSTEMS.map((system, index) => (
-          <BranchCard key={system.key} system={system} index={index} progress={progress} />
-        ))}
+        <BranchCarousel progress={progress} />
       </div>
     </section>
+  );
+}
+
+function BranchCarousel({ progress }: { progress: MotionValue<number> }) {
+  const opacity = useTransform(progress, [0.08, 0.24], [0, 1]);
+  const y = useTransform(progress, [0.08, 0.28], [42, 0]);
+  const scale = useTransform(progress, [0.08, 0.28], [0.98, 1]);
+  const carouselGroups = [SYSTEMS, SYSTEMS];
+
+  return (
+    <motion.div
+      className="branch-carousel-mask absolute left-0 right-0 top-[calc(25vh+14px)] z-20 overflow-hidden py-3 gpu"
+      style={{ opacity, y, scale }}
+    >
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[12vw] bg-gradient-to-r from-[#F2F5F1] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[12vw] bg-gradient-to-l from-[#F2F5F1] to-transparent" />
+      <div className="branch-carousel-track flex w-max">
+        {carouselGroups.map((group, groupIndex) => (
+          <div key={groupIndex} className="flex gap-6 pr-6">
+            {group.map((system, index) => (
+              <BranchCard key={`${groupIndex}-${system.key}`} system={system} index={index} progress={progress} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
@@ -552,32 +643,47 @@ function BranchCard({
   index: number;
   progress: MotionValue<number>;
 }) {
-  const finalX = index === 0 ? -235 : index === 1 ? 0 : 235;
-  const startAt = index === 0 ? 0.18 : index === 1 ? 0.36 : 0.52;
-  const x = useTransform(progress, [startAt, startAt + 0.34], [0, finalX]);
-  const y = useTransform(progress, [startAt, startAt + 0.34], [82, 170]);
-  const scale = useTransform(progress, [startAt, startAt + 0.34], [0.9, 0.82]);
+  const startAt = 0.2 + index * 0.05;
+  const y = useTransform(progress, [startAt, startAt + 0.22], [28, 0]);
   const opacity = useTransform(progress, [startAt - 0.05, startAt + 0.12], [0, 1]);
-  const clip = useTransform(progress, [startAt, startAt + 0.25], ["inset(48% 42% 48% 42% round 28px)", "inset(0% 0% 0% 0% round 24px)"]);
   const Icon = system.Icon;
 
   return (
-    <motion.div className="absolute left-1/2 top-[31vh] z-20 w-[238px] -translate-x-1/2 gpu md:w-[250px]" style={{ x, y, scale, opacity, clipPath: clip }}>
-      <LivingCard accent={system.color}>
-        <div className="mb-5 flex items-start justify-between">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: system.color }}>
-            <Icon size={22} className="text-white" strokeWidth={1.5} />
+    <motion.div className="h-[270px] w-[min(86vw,520px)] flex-none gpu" style={{ y, opacity }}>
+      <LivingCard accent={system.color} className="card-sheen h-full">
+        <div className="mb-3 flex items-start justify-between">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: system.color }}>
+            <Icon size={20} className="text-white" strokeWidth={1.5} />
           </div>
           <span className="font-['JetBrains_Mono'] text-[10px] text-[#9CA3AF]">{system.code}</span>
         </div>
-        <h3 className="font-['Playfair_Display'] text-[25px] font-semibold leading-[1.12] text-[#1A1F2E]">{system.title}</h3>
-        <p className="mt-3 min-h-[54px] font-['DM_Sans'] text-[13px] font-light leading-[1.6] text-[#556070]">{system.short}</p>
-        <div className="mt-5 space-y-2.5">
-          {system.rows.map((row, rowIndex) => (
+        <h3 className="font-['Playfair_Display'] text-[22px] font-semibold leading-[1.08] text-[#1A1F2E]">{system.title}</h3>
+        <div className="description-box mt-2 rounded-lg border border-[#0B6B6B]/8 bg-[#F4FAFA]/85 px-3 py-2">
+          <p className="description-text font-['JetBrains_Mono'] text-[11px] leading-[1.35] text-[#49616B]">{system.short}</p>
+        </div>
+        <motion.a
+          href="#workflow"
+          className="mt-3 inline-flex h-10 items-center gap-2 rounded-lg px-4 font-['DM_Sans'] text-[13px] font-medium text-white shadow-[0_14px_28px_rgba(11,107,107,.14)]"
+          style={{
+            background: `linear-gradient(135deg, ${system.color}, ${system.color})`,
+          }}
+          whileHover={{
+            y: -3,
+            scale: 1.035,
+            boxShadow: "0 18px 38px rgba(184,145,66,.26), 0 10px 26px rgba(11,107,107,.18)",
+            background: `linear-gradient(135deg, ${system.color}, #B89142)`,
+          }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 340, damping: 20 }}
+        >
+          {system.cta}
+          <ArrowRight size={15} />
+        </motion.a>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {system.rows.slice(0, 2).map((row, rowIndex) => (
             <BranchRow key={row} row={row} rowIndex={rowIndex} progress={progress} color={system.color} />
           ))}
         </div>
-        <BranchSpecificMotion systemKey={system.key} color={system.color} />
       </LivingCard>
     </motion.div>
   );
@@ -596,42 +702,10 @@ function BranchRow({
 }) {
   const y = useTransform(progress, [0.42 + rowIndex * 0.04, 0.8], [14, 0]);
   return (
-    <motion.div className="flex items-center gap-2 rounded-lg border border-[#0B6B6B]/10 bg-[#F8FAFA] px-3 py-2" style={{ y }}>
+    <motion.div className="flex min-h-8 items-center gap-2 rounded-lg border border-[#0B6B6B]/10 bg-[#F8FAFA] px-3 py-1.5" style={{ y }}>
       <CircleDot size={12} style={{ color }} />
       <span className="font-['DM_Sans'] text-[12px] text-[#1A1F2E]">{row}</span>
     </motion.div>
-  );
-}
-
-function BranchSpecificMotion({ systemKey, color }: { systemKey: string; color: string }) {
-  if (systemKey === "advisory") {
-    return (
-      <svg className="mt-5 h-24 w-full overflow-visible" viewBox="0 0 280 96" fill="none">
-        <path d="M12 72 C58 18 106 84 152 38 S230 34 268 68" stroke={color} strokeWidth="1.3" className="flow-line" />
-        {[32, 142, 238].map((cx, item) => (
-          <circle key={item} cx={cx} cy={item === 1 ? 42 : 64} r="4" fill="#B89142" />
-        ))}
-      </svg>
-    );
-  }
-  if (systemKey === "operational") {
-    return (
-      <div className="mt-5 grid grid-cols-4 gap-2">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <div key={index} className="h-7 rounded-md border border-[#0B6B6B]/10 bg-[#EEF7F7]" />
-        ))}
-      </div>
-    );
-  }
-  return (
-    <div className="mt-5 border-l border-[#0B6B6B]/18 pl-4">
-      {["Notice served", "Limitation checked", "Precedents ranked"].map((item, index) => (
-        <div key={item} className="relative mb-3 font-['DM_Sans'] text-[12px] text-[#556070]">
-          <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-[#B89142]" />
-          {item}
-        </div>
-      ))}
-    </div>
   );
 }
 
