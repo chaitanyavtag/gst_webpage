@@ -8,10 +8,8 @@ import {
   useTransform,
 } from "motion/react";
 import type { MotionValue } from "motion/react";
+import vtagLogo from "../assets/vtag-logo.png";
 import {
-  BadgeCheck,
-  Building2,
-  CheckCircle2,
   ClipboardCheck,
   CircleDot,
   Database,
@@ -21,7 +19,6 @@ import {
   Layers3,
   Network,
   ArrowRight,
-  Scale,
   ShieldCheck,
 } from "lucide-react";
 
@@ -99,6 +96,29 @@ const GLOBAL_STYLES = `
     transition: color .22s ease, transform .22s ease;
   }
   .citation-chip:hover .citation-chip__text { transform: translateZ(18px); }
+  .gold-hover-text,
+  .gold-hover-copy {
+    transition:
+      color .22s ease,
+      text-shadow .22s ease,
+      filter .22s ease;
+  }
+  .gold-hover-text:hover,
+  .gold-hover-text:focus-visible {
+    color: #B89142;
+    text-shadow:
+      0 0 12px rgba(184,145,66,.26),
+      0 0 26px rgba(224,184,106,.2),
+      0 0 44px rgba(224,184,106,.12);
+    filter: drop-shadow(0 0 18px rgba(224,184,106,.18));
+  }
+  .gold-hover-copy:hover,
+  .gold-hover-copy:focus-visible {
+    color: #9E7A34;
+    text-shadow:
+      0 0 10px rgba(184,145,66,.22),
+      0 0 22px rgba(224,184,106,.14);
+  }
   .gpu { transform: translateZ(0); will-change: transform, opacity, filter; }
   .text-balance { text-wrap: balance; }
   .sweep-mask { position: relative; overflow: hidden; }
@@ -446,15 +466,15 @@ function Navbar() {
   return (
     <motion.nav className="fixed left-0 right-0 top-0 z-[70] border-b border-[#0B6B6B]/10 backdrop-blur-sm" style={{ backgroundColor: bg, boxShadow: shadow }}>
       <div className="mx-auto flex max-w-[1380px] items-center justify-between px-6 py-4 lg:px-10">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0B6B6B] shadow-[0_12px_28px_rgba(11,107,107,.25)]">
-            <Scale size={19} className="text-white" strokeWidth={1.6} />
-          </div>
-          <div>
-            <div className="font-['Playfair_Display'] text-[20px] font-semibold text-[#1A1F2E]">GST Intelligence</div>
-            <div className="font-['JetBrains_Mono'] text-[9px] uppercase tracking-[.18em] text-[#0B6B6B]/55">Cinematic institutional prototype</div>
-          </div>
-        </div>
+        <a
+          href="https://vtagsoftware.com/"
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-3"
+        >
+          <img src={vtagLogo} alt="TAGott.ai logo" className="h-11 w-auto object-contain" />
+          <div className="font-['Playfair_Display'] text-[20px] font-semibold text-[#1A1F2E]">TAGott.ai</div>
+        </a>
         <div className="hidden items-center gap-7 lg:flex">
           {["Core", "Branches", "Governance", "Workflow"].map((item) => (
             <a key={item} href={`#${item.toLowerCase()}`} className="font-['DM_Sans'] text-[13px] text-[#1A1F2E]/64 transition hover:text-[#0B6B6B]">
@@ -539,10 +559,10 @@ function Hero() {
           className="absolute left-1/2 top-[48%] z-20 w-full max-w-[980px] -translate-x-1/2 -translate-y-1/2 px-6 text-center sm:px-8"
           style={{ scale: textScale, opacity: textOpacity, y: textY }}
         >
-          <h1 className="text-balance font-['Playfair_Display'] text-[clamp(2.75rem,6vw,5rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
+          <h1 className="gold-hover-text text-balance font-['Playfair_Display'] text-[clamp(2.75rem,6vw,5rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
             One governed GST core evolving into specialist AI systems.
           </h1>
-          <p className="mx-auto mt-5 max-w-[760px] text-balance font-['DM_Sans'] text-[15px] font-light leading-[1.7] text-[#556070] sm:text-[17px] md:text-[18px]">
+          <p className="gold-hover-copy mx-auto mt-5 max-w-[760px] text-balance font-['DM_Sans'] text-[15px] font-light leading-[1.7] text-[#556070] sm:text-[17px] md:text-[18px]">
             The homepage behaves as a living institutional reasoning architecture: sources orbit, connectors redraw, modules detach, and branches emerge through scroll.
           </p>
         </motion.div>
@@ -942,46 +962,78 @@ function WorkflowStep({
   );
 }
 
-function ClosingSection() {
+function Footer() {
+  const quickLinks = [
+    { label: "Industries", href: "https://vtagsoftware.com/industries" },
+    { label: "BrikBond", href: "https://vtagsoftware.com/brikbond" },
+    { label: "Vision", href: "https://vtagsoftware.com/why-vtag#vision" },
+    { label: "Why V-TAG", href: "https://vtagsoftware.com/why-vtag" },
+    { label: "Contact", href: "https://vtagsoftware.com/contact" },
+  ];
+  const focusAreas = ["Real Estate", "Legal", "Banking", "Retail", "Workforce"];
   return (
-    <section className="relative overflow-hidden bg-[#0B6B6B] py-16">
-      <div className="absolute inset-0 opacity-[.05]" style={{ backgroundImage: "linear-gradient(rgba(224,184,106,1) 1px, transparent 1px), linear-gradient(90deg, rgba(224,184,106,1) 1px, transparent 1px)", backgroundSize: "46px 46px" }} />
-      <div className="relative z-10 mx-auto flex max-w-[1380px] flex-col justify-between gap-10 px-6 lg:flex-row lg:items-center lg:px-10">
-        <div className="max-w-2xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-4 py-2">
-            <BadgeCheck size={14} className="text-[#E0B86A]" />
-            <span className="font-['JetBrains_Mono'] text-[10px] uppercase tracking-[.15em] text-white/72">Institutional motion system</span>
+    <footer className="relative overflow-hidden bg-[#060B0D] px-6 py-16 text-white lg:px-10">
+      <div
+        className="absolute inset-0 opacity-[.08]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(99,115,129,.55) 1px, transparent 1px), linear-gradient(90deg, rgba(99,115,129,.55) 1px, transparent 1px)",
+          backgroundSize: "66px 66px",
+        }}
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(11,107,107,.18),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(224,184,106,.12),transparent_28%)]" />
+      <div className="relative mx-auto max-w-[1380px]">
+        <div className="grid gap-14 border-t border-white/10 pt-10 lg:grid-cols-[minmax(0,1.75fr)_minmax(280px,.75fr)] lg:gap-16">
+          <div>
+            <div className="font-['JetBrains_Mono'] text-[11px] uppercase tracking-[0.4em] text-[#E0B86A]/85">Company</div>
+            <div className="mt-10 max-w-4xl border-t border-white/10 pt-10">
+              <img src={vtagLogo} alt="V-TAG logo" className="h-20 w-auto object-contain sm:h-24" />
+              <p className="mt-6 font-['Playfair_Display'] text-[30px] leading-none text-white sm:text-[42px]">Software Reinvented</p>
+              <p className="mt-8 max-w-4xl font-['DM_Sans'] text-[18px] leading-[1.8] text-white/72 sm:text-[20px]">
+                A technology company focused on delivering innovative AI-driven solutions with a strong
+                emphasis on business value, scalability, and real-world impact.
+              </p>
+              <p className="mt-8 font-['JetBrains_Mono'] text-[13px] uppercase tracking-[0.36em] text-[#E0B86A]">
+                Built &amp; Maintained In-House.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
+                {focusAreas.map((area) => (
+                  <span
+                    key={area}
+                    className="font-['JetBrains_Mono'] text-[12px] uppercase tracking-[0.34em] text-white/55 sm:text-[13px]"
+                  >
+                    {area}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
-          <h2 className="font-['Playfair_Display'] text-[42px] font-semibold leading-[1.08] text-white md:text-[58px]">
-            Motion now carries the architecture.
-          </h2>
-          <p className="mt-5 max-w-xl font-['DM_Sans'] text-[16px] font-light leading-[1.75] text-white/66">
-            Scroll controls the core, branches, pipelines, governance rhythm, connector persistence,
-            environmental parallax, and card depth response.
+          <div>
+            <div className="font-['JetBrains_Mono'] text-[11px] uppercase tracking-[0.4em] text-[#E0B86A]/85">Quick Links</div>
+            <div className="mt-10 border-t border-white/10 pt-10">
+              <div className="flex flex-col gap-6">
+                {quickLinks.map(({ label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-['JetBrains_Mono'] text-[15px] uppercase tracking-[0.34em] text-white transition hover:text-[#E0B86A]"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-12 border-t border-white/10 pt-6">
+          <div className="font-['JetBrains_Mono'] text-[10px] uppercase tracking-[0.28em] text-[#E0B86A]/85">Disclaimer</div>
+          <p className="mt-3 max-w-4xl font-['DM_Sans'] text-[14px] leading-[1.8] text-white/55">
+            Disclaimer placeholder: update this section later with your company disclaimer, legal note,
+            or compliance language.
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {["Parallax planes", "Morph branches", "Living cards", "Governed pipeline"].map((item) => (
-            <div key={item} className="sweep-mask rounded-xl border border-white/12 bg-white/8 p-5">
-              <CheckCircle2 size={18} className="mb-3 text-[#E0B86A]" />
-              <div className="font-['DM_Sans'] text-[14px] font-medium text-white">{item}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="bg-[#084F4F] px-6 py-10 lg:px-10">
-      <div className="mx-auto flex max-w-[1380px] flex-col justify-between gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-3">
-          <Building2 size={18} className="text-[#E0B86A]" />
-          <span className="font-['DM_Sans'] text-[13px] text-white/55">GST Intelligence Framework Prototype</span>
-        </div>
-        <span className="font-['JetBrains_Mono'] text-[10px] uppercase tracking-[.14em] text-white/35">Secure - Governed - Traceable</span>
       </div>
     </footer>
   );
@@ -997,7 +1049,6 @@ function AppContent() {
       <BranchMorphStage />
       <GovernanceLayer />
       <WorkflowPipeline />
-      <ClosingSection />
       <Footer />
     </>
   );
