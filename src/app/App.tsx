@@ -192,7 +192,7 @@ const GLOBAL_STYLES = `
     pointer-events: none;
   }
   .hero-value-list__copy {
-    font-family: "DM Sans", sans-serif;
+    font-family: "Nunito Sans", sans-serif;
     font-size: clamp(1.4rem, 1.95vw, 1.72rem);
     line-height: 1.44;
     color: rgba(26,31,46,.82);
