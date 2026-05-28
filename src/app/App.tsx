@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 import type { MotionValue } from "motion/react";
 import vtagLogo from "../assets/vtag-logo.png";
+import taxOttLogo from "../assets/image-removebg-preview.png";
 import {
   ClipboardCheck,
   CircleDot,
@@ -130,8 +131,8 @@ const GLOBAL_STYLES = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 1.4rem auto 0;
-    width: min(100%, 980px);
+    margin: 1.2rem auto 0;
+    width: min(100%, 44rem);
   }
   .spring-tagline__text {
     display: flex;
@@ -146,34 +147,34 @@ const GLOBAL_STYLES = `
     color: #0E0C09;
   }
   .hero-wordmark {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: min(100%, 980px);
+    justify-content: center;
+    width: min(100%, 980px);
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-wordmark__logo {
+    margin: 0 auto 0.35rem;
+    width: clamp(13.5rem, 25vw, 19rem);
+    height: auto;
+    object-fit: contain;
   }
   .hero-wordmark__title {
     margin: 0;
+    width: 100%;
+    text-align: center;
   }
   @media (min-width: 768px) {
-    .hero-wordmark {
-      display: inline-grid;
-      grid-template-columns: auto auto;
-      align-items: start;
-    }
-    .hero-wordmark__title {
-      grid-column: 1 / -1;
-      display: inline-flex;
-    }
     .spring-tagline {
-      grid-column: 2;
-      justify-self: start;
-      align-items: flex-start;
-      margin: 1rem 0 0;
-      width: min(33rem, calc(100vw - 3rem));
+      align-items: center;
+      margin: 1.2rem auto 0;
+      width: min(100%, 48rem);
     }
     .spring-tagline__text {
-      justify-content: flex-start;
-      text-align: left;
+      justify-content: center;
+      text-align: center;
     }
   }
   .hero-value-list {
@@ -617,8 +618,9 @@ function Navbar() {
           rel="noreferrer"
           className="flex items-center gap-3"
         >
-          <img src={vtagLogo} alt="Taxott.ai logo" className="h-11 w-auto object-contain" />
-          <div className="font-['Playfair_Display'] text-[20px] font-semibold text-[#1A1F2E]">Taxott.ai</div>
+          <img src={vtagLogo} alt="V-TAG logo" className="h-11 w-auto object-contain" />
+          <img src={taxOttLogo} alt="TaxOtt logo" className="h-11 w-auto object-contain" />
+          <div className="font-['Playfair_Display'] text-[26px] font-semibold text-[#1A1F2E]">TaxOtt.ai</div>
         </a>
         <div className="hidden items-center gap-7 lg:flex">
           {["Core", "Branches", "Governance", "Workflow"].map((item) => (
@@ -718,7 +720,8 @@ function Hero() {
           style={{ scale: textScale, opacity: textOpacity, y: textY }}
         >
           <div className="hero-wordmark">
-            <h1 className="hero-wordmark__title gold-hover-text text-balance font-['Playfair_Display'] text-[clamp(3.45rem,7.5vw,6.35rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
+            <img src={taxOttLogo} alt="TaxOtt logo" className="hero-wordmark__logo" />
+            <h1 className="hero-wordmark__title gold-hover-text text-balance font-['Playfair_Display'] text-[clamp(4rem,8.6vw,7.1rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
               TaxOtt.ai
             </h1>
             <HeroSpringTagline text={HERO_TAGLINE} />
@@ -810,7 +813,7 @@ function HeroBranchStage({ progress }: { progress: MotionValue<number> }) {
         <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#0B6B6B]">
           <Network size={21} className="text-white" />
         </div>
-        <div className="font-['JetBrains_Mono'] text-[10px] lowercase tracking-[.16em] text-[#B89142]">taxott.ai</div>
+        <div className="font-['JetBrains_Mono'] text-[10px] lowercase tracking-[.16em] text-[#B89142]">taxOtt.ai</div>
         <div className="mt-1.5 font-['Playfair_Display'] text-[21px] font-semibold text-[#1A1F2E]">
           Modules detach into branches
         </div>
