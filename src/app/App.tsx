@@ -39,8 +39,6 @@ const GLOBAL_STYLES = `
   @keyframes card-sheen { 0% { transform: translateX(120%); opacity: 0; } 22% { opacity: 1; } 78% { opacity: 1; } 100% { transform: translateX(-120%); opacity: 0; } }
   @keyframes typewriter { 0%, 16% { clip-path: inset(0 100% 0 0); } 58%, 100% { clip-path: inset(0 0 0 0); } }
   @keyframes caret-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: 0; } }
-  .flow-line { stroke-dasharray: 9 12; }
-  .flow-line-slow { stroke-dasharray: 14 18; }
   .branch-carousel-track { animation: branch-carousel 28s linear infinite; }
   .branch-carousel-mask:hover .branch-carousel-track { animation-play-state: paused; }
   .card-sheen { position: relative; overflow: hidden; }
@@ -128,6 +126,88 @@ const GLOBAL_STYLES = `
       0 0 10px rgba(184,145,66,.22),
       0 0 22px rgba(224,184,106,.14);
   }
+  .spring-tagline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.4rem auto 0;
+    width: min(100%, 980px);
+  }
+  .spring-tagline__text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(1.0rem, 3.45vw, 1.8rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+    color: #0E0C09;
+  }
+  .hero-wordmark {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: min(100%, 980px);
+  }
+  .hero-wordmark__title {
+    margin: 0;
+  }
+  @media (min-width: 768px) {
+    .hero-wordmark {
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      align-items: start;
+    }
+    .hero-wordmark__title {
+      grid-column: 1 / -1;
+      display: inline-flex;
+    }
+    .spring-tagline {
+      grid-column: 2;
+      justify-self: start;
+      align-items: flex-start;
+      margin: 1rem 0 0;
+      width: min(33rem, calc(100vw - 3rem));
+    }
+    .spring-tagline__text {
+      justify-content: flex-start;
+      text-align: left;
+    }
+  }
+  .hero-value-list {
+    position: relative;
+    margin: 1.55rem auto 0;
+    width: min(100%, 1000px);
+    min-height: 120px;
+  }
+  .hero-value-list__row {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+  }
+  .hero-value-list__copy {
+    font-family: "DM Sans", sans-serif;
+    font-size: clamp(1.4rem, 1.95vw, 1.72rem);
+    line-height: 1.44;
+    color: rgba(26,31,46,.82);
+    text-wrap: balance;
+    max-width: 980px;
+  }
+  .hero-value-list__label {
+    font-weight: 700;
+    color: #1A1F2E;
+  }
+  @media (max-width: 640px) {
+    .hero-value-list {
+      min-height: 154px;
+    }
+  }
   .gpu { transform: translateZ(0); will-change: transform, opacity, filter; }
   .text-balance { text-wrap: balance; }
   .sweep-mask { position: relative; overflow: hidden; }
@@ -148,7 +228,7 @@ const SYSTEMS = [
   {
     key: "litigation",
     title: "Litigation Intelligence",
-    short: "SCN defence, precedent ranking, limitation checks",
+    short: "The GST Intelligence Layer: Traceable, Defensible, and Audit-Ready",
     code: "LIT-01",
     cta: "Build defence",
     Icon: Gavel,
@@ -158,7 +238,7 @@ const SYSTEMS = [
   {
     key: "advisory",
     title: "Advisory Intelligence",
-    short: "ITC, POS, contracts, transaction structures",
+    short: "Translating complex GST legislation into clear, actionable strategy",
     code: "ADV-02",
     cta: "Map advisory",
     Icon: GitBranch,
@@ -168,7 +248,7 @@ const SYSTEMS = [
   {
     key: "operational",
     title: "Operational Intelligence",
-    short: "HSN/SAC, rates, ERP tax controls, SOP retrieval",
+    short: "The fastest path from an operational query to a compliant answer",
     code: "OPS-03",
     cta: "Validate controls",
     Icon: Database,
@@ -222,6 +302,26 @@ const HERO_NODES: HeroNodeData[] = [
   { symbol: "\u25C9", angle: 2.08, baseRadius: 154, expansion: 196, exitRadius: 810, size: 34, depth: 0.8, spin: -1.78, color: "#1A7A68", glow: "rgba(26,122,104,.22)", blur: 0.18, opacity: 0.82, xScale: 0.96, yScale: 0.84, tilt: 8 },
   { symbol: "\u2B22", angle: 2.56, baseRadius: 198, expansion: 236, exitRadius: 900, size: 26, depth: 0.7, spin: 1.68, color: "#B89142", glow: "rgba(184,145,66,.2)", blur: 0.28, opacity: 0.76, xScale: 1.16, yScale: 0.72, tilt: -16 },
 ];
+
+const HERO_TAGLINE = "Automating the Research, Elevating the Judgement";
+const HERO_VALUE_POINTS = [
+  {
+    label: "Speed",
+    text: "Reduce legal research time by up to 80% and increase operations resolution speed by 10x.",
+  },
+  {
+    label: "Precision",
+    text: "Zero-hallucination responses by limiting all analysis to your private, curated GST knowledge library.",
+  },
+  {
+    label: "Consistency",
+    text: "Standardized, citation-backed answers ensure every department provides the same legally grounded advice.",
+  },
+  {
+    label: "Defensibility",
+    text: "Transform messy show-cause notices into structured, audit-ready defense frameworks with ease.",
+  },
+] as const;
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 const lerp = (start: number, end: number, amount: number) => start + (end - start) * amount;
@@ -517,8 +617,8 @@ function Navbar() {
           rel="noreferrer"
           className="flex items-center gap-3"
         >
-          <img src={vtagLogo} alt="TAGott.ai logo" className="h-11 w-auto object-contain" />
-          <div className="font-['Playfair_Display'] text-[20px] font-semibold text-[#1A1F2E]">TAGott.ai</div>
+          <img src={vtagLogo} alt="Taxott.ai logo" className="h-11 w-auto object-contain" />
+          <div className="font-['Playfair_Display'] text-[20px] font-semibold text-[#1A1F2E]">Taxott.ai</div>
         </a>
         <div className="hidden items-center gap-7 lg:flex">
           {["Core", "Branches", "Governance", "Workflow"].map((item) => (
@@ -564,6 +664,19 @@ function Hero() {
     damping: 18,
   });
   const overlayVeil = useTransform(progress, [0.54, 0.8], [0, 0.84]);
+  const branchProgress = useTransform(progress, [0.72, 0.98], [0, 1]);
+  const branchStageOpacity = useSpring(useTransform(progress, [0.7, 0.78], [0, 1]), {
+    stiffness: 220,
+    damping: 30,
+  });
+  const branchStageY = useSpring(useTransform(progress, [0.7, 0.8], [44, 0]), {
+    stiffness: 210,
+    damping: 28,
+  });
+  const branchStageScale = useSpring(useTransform(progress, [0.7, 0.8], [0.94, 1]), {
+    stiffness: 210,
+    damping: 28,
+  });
 
   return (
     <section id="core" className="relative h-[360vh] bg-[#F6F4EF]">
@@ -604,15 +717,107 @@ function Hero() {
           className="absolute left-1/2 top-[48%] z-20 w-full max-w-[980px] -translate-x-1/2 -translate-y-1/2 px-6 text-center sm:px-8"
           style={{ scale: textScale, opacity: textOpacity, y: textY }}
         >
-          <h1 className="gold-hover-text text-balance font-['Playfair_Display'] text-[clamp(2.75rem,6vw,5rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
-            One governed GST core evolving into specialist AI systems.
-          </h1>
-          <p className="gold-hover-copy mx-auto mt-5 max-w-[760px] text-balance font-['DM_Sans'] text-[15px] font-light leading-[1.7] text-[#556070] sm:text-[17px] md:text-[18px]">
-            The homepage behaves as a living institutional reasoning architecture: sources orbit, connectors redraw, modules detach, and branches emerge through scroll.
-          </p>
+          <div className="hero-wordmark">
+            <h1 className="hero-wordmark__title gold-hover-text text-balance font-['Playfair_Display'] text-[clamp(3.45rem,7.5vw,6.35rem)] font-semibold leading-[1.02] text-[#1A1F2E]">
+              TaxOtt.ai
+            </h1>
+            <HeroSpringTagline text={HERO_TAGLINE} />
+          </div>
+          <HeroScrollPoints progress={progress} />
+        </motion.div>
+
+        <motion.div
+          className="absolute inset-0 z-20"
+          style={{ opacity: branchStageOpacity, y: branchStageY, scale: branchStageScale }}
+        >
+          <HeroBranchStage progress={branchProgress} />
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function HeroSpringTagline({ text }: { text: string }) {
+  return (
+    <div className="spring-tagline">
+      <p className="spring-tagline__text gold-hover-copy">{text}</p>
+    </div>
+  );
+}
+
+function HeroScrollPoints({ progress }: { progress: MotionValue<number> }) {
+  return (
+    <div className="hero-value-list" aria-label="Value-driven bullet points">
+      {HERO_VALUE_POINTS.map((point, index) => (
+        <HeroScrollPoint
+          key={point.label}
+          progress={progress}
+          index={index}
+          total={HERO_VALUE_POINTS.length}
+          label={point.label}
+          text={point.text}
+        />
+      ))}
+    </div>
+  );
+}
+
+function HeroScrollPoint({
+  progress,
+  index,
+  total,
+  label,
+  text,
+}: {
+  progress: MotionValue<number>;
+  index: number;
+  total: number;
+  label: string;
+  text: string;
+}) {
+  const step = 0.12;
+  const start = 0.16 + index * step;
+  const fadeIn = start + 0.045;
+  const hold = fadeIn + 0.09;
+  const fadeOut = Math.min(0.7, hold + 0.05);
+
+  const opacity = useTransform(progress, [start, fadeIn, hold, fadeOut], [0, 1, 1, 0]);
+  const y = useTransform(progress, [start, fadeIn, hold, fadeOut], [22, 0, 0, -18]);
+  const scale = useTransform(progress, [start, fadeIn, hold, fadeOut], [0.985, 1, 1, 1.015]);
+  const blur = useTransform(progress, [start, fadeIn, hold, fadeOut], [8, 0, 0, 6]);
+  const filter = useMotionTemplate`blur(${blur}px)`;
+  const zIndex = total - index;
+
+  return (
+    <motion.div className="hero-value-list__row" style={{ opacity, y, scale, filter, zIndex }}>
+      <p className="hero-value-list__copy">
+        <span className="hero-value-list__label">{label}:</span> {text}
+      </p>
+    </motion.div>
+  );
+}
+
+function HeroBranchStage({ progress }: { progress: MotionValue<number> }) {
+  const headerY = useTransform(progress, [0, 0.28], [34, 0]);
+  const headerOpacity = useTransform(progress, [0, 0.22], [0, 1]);
+
+  return (
+    <>
+      <motion.div
+        className="absolute left-1/2 top-[4.5vh] z-10 w-[300px] -translate-x-1/2 rounded-2xl border border-[#0B6B6B]/12 bg-white/94 p-4 text-center shadow-[0_18px_54px_rgba(11,107,107,.095)] backdrop-blur-sm gpu"
+        style={{ y: headerY, opacity: headerOpacity }}
+      >
+        <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#0B6B6B]">
+          <Network size={21} className="text-white" />
+        </div>
+        <div className="font-['JetBrains_Mono'] text-[10px] lowercase tracking-[.16em] text-[#B89142]">taxott.ai</div>
+        <div className="mt-1.5 font-['Playfair_Display'] text-[21px] font-semibold text-[#1A1F2E]">
+          Modules detach into branches
+        </div>
+      </motion.div>
+
+      <BranchCarousel progress={progress} topClassName="top-[calc(34vh+10px)]" />
+    </>
   );
 }
 
@@ -744,7 +949,13 @@ function BranchMorphStage() {
   );
 }
 
-function BranchCarousel({ progress }: { progress: MotionValue<number> }) {
+function BranchCarousel({
+  progress,
+  topClassName = "top-[calc(25vh+14px)]",
+}: {
+  progress: MotionValue<number>;
+  topClassName?: string;
+}) {
   const opacity = useTransform(progress, [0.08, 0.24], [0, 1]);
   const y = useTransform(progress, [0.08, 0.28], [42, 0]);
   const scale = useTransform(progress, [0.08, 0.28], [0.98, 1]);
@@ -752,7 +963,7 @@ function BranchCarousel({ progress }: { progress: MotionValue<number> }) {
 
   return (
     <motion.div
-      className="branch-carousel-mask absolute left-0 right-0 top-[calc(25vh+14px)] z-20 overflow-hidden py-3 gpu"
+      className={`branch-carousel-mask absolute left-0 right-0 ${topClassName} z-20 overflow-hidden py-3 gpu`}
       style={{ opacity, y, scale }}
     >
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[12vw] bg-gradient-to-r from-[#F2F5F1] to-transparent" />
@@ -815,32 +1026,7 @@ function BranchCard({
           {system.cta}
           <ArrowRight size={15} />
         </motion.a>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {system.rows.slice(0, 2).map((row, rowIndex) => (
-            <BranchRow key={row} row={row} rowIndex={rowIndex} progress={progress} color={system.color} />
-          ))}
-        </div>
       </LivingCard>
-    </motion.div>
-  );
-}
-
-function BranchRow({
-  row,
-  rowIndex,
-  progress,
-  color,
-}: {
-  row: string;
-  rowIndex: number;
-  progress: MotionValue<number>;
-  color: string;
-}) {
-  const y = useTransform(progress, [0.42 + rowIndex * 0.04, 0.8], [14, 0]);
-  return (
-    <motion.div className="flex min-h-8 items-center gap-2 rounded-lg border border-[#0B6B6B]/10 bg-[#F8FAFA] px-3 py-1.5" style={{ y }}>
-      <CircleDot size={12} style={{ color }} />
-      <span className="font-['DM_Sans'] text-[12px] text-[#1A1F2E]">{row}</span>
     </motion.div>
   );
 }
@@ -987,67 +1173,6 @@ function GovernanceMotionCard({
   );
 }
 
-function WorkflowPipeline() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollY } = useSmooth();
-  const { top, height } = useMeasureSection(ref);
-  const progress = useTransform(scrollY, [top - 500, top + height - 400], [0, 1]);
-  const pathLength = useTransform(progress, [0, 1], [0, 1]);
-  const steps = [
-    ["01", "Intake", "Notice, contract, invoice, filing, or query enters the system."],
-    ["02", "Extraction", "Sections, allegations, dates, evidence gaps, and risks are isolated."],
-    ["03", "Retrieval", "Acts, Rules, Notifications, Circulars, rulings, and courts are searched."],
-    ["04", "Ranking", "Authority, jurisdiction, recency, and factual similarity determine priority."],
-    ["05", "Reasoning", "Issue-wise draft analysis forms with citation-linked support."],
-    ["06", "Sign-off", "Reviewer approval stabilizes the final institutional output."],
-  ];
-
-  return (
-    <section id="workflow" ref={ref} className="relative overflow-hidden bg-[#EEF7F7] py-14">
-      <div className="mx-auto max-w-[1380px] px-6 lg:px-10">
-        <div className="mx-auto mb-10 max-w-3xl text-center">
-          <div className="mb-6 flex justify-center"><SectionLabel>Reasoning Pipeline</SectionLabel></div>
-          <h2 className="font-['Playfair_Display'] text-[42px] font-semibold leading-[1.1] text-[#1A1F2E] md:text-[56px]">Workflow animates like live legal reasoning.</h2>
-        </div>
-        <div className="relative">
-          <svg className="absolute left-[6%] right-[6%] top-12 hidden h-20 w-[88%] lg:block" viewBox="0 0 1100 80" fill="none">
-            <motion.path style={{ pathLength }} d="M0 40 C160 10 240 70 380 40 S620 10 760 40 S960 72 1100 40" stroke="#0B6B6B" strokeWidth="2" className="flow-line" />
-          </svg>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-6">
-            {steps.map(([number, title, body], index) => (
-              <WorkflowStep key={number} number={number} title={title} body={body} index={index} progress={progress} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WorkflowStep({
-  number,
-  title,
-  body,
-  index,
-  progress,
-}: {
-  number: string;
-  title: string;
-  body: string;
-  index: number;
-  progress: MotionValue<number>;
-}) {
-  const y = useTransform(progress, [index / 8, 1], [44, 0]);
-  const opacity = useTransform(progress, [index / 8, index / 8 + 0.15], [0.3, 1]);
-  return (
-    <motion.div className="rounded-xl border border-[#0B6B6B]/10 bg-white p-5 text-center shadow-[0_10px_32px_rgba(11,107,107,.06)]" style={{ y, opacity }}>
-      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0B6B6B] font-['JetBrains_Mono'] text-[14px] text-white shadow-[0_12px_26px_rgba(11,107,107,.25)]">{number}</div>
-      <h3 className="font-['Playfair_Display'] text-[18px] font-semibold text-[#1A1F2E]">{title}</h3>
-      <p className="mt-3 font-['DM_Sans'] text-[12px] font-light leading-[1.55] text-[#6B7280]">{body}</p>
-    </motion.div>
-  );
-}
-
 function Footer() {
   const quickLinks = [
     { label: "Industries", href: "https://vtagsoftware.com/industries" },
@@ -1132,9 +1257,7 @@ function AppContent() {
       <IntelligenceCursor />
       <Navbar />
       <Hero />
-      <BranchMorphStage />
       <GovernanceLayer />
-      <WorkflowPipeline />
       <Footer />
     </>
   );
